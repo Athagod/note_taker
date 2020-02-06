@@ -3,7 +3,7 @@ const path = require("path")
 
 const app = express()
 
-const PORT = 8080
+const PORT = 3000
 
 
 app.use(express.urlencoded({ extended: true }));
