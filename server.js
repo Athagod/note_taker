@@ -1,22 +1,28 @@
-const express = require("express")
-const path = require("path")
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
 
-const app = express()
+const app = express();
+const notes = require("./db.json")
 
-const PORT = 3000
 
+const PORT = process.env.PORT || 3000
 
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
 app.get("/index", function(_, res) {
     res.sendFile(path.join(__dirname, "index.html"));
-  })
+  });
 
-.get("/notes", function(_, res) {
-    res.sendFile(path.join(__dirname, "notes.html"))
-})
+app.get("/notes", function(_, res) {
+    res.sendFile(path.join(__dirname, "/public/notes.html"))
+});
+
+
+
 
 
   app.listen(PORT, function() {
