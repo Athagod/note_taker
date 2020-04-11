@@ -4,131 +4,135 @@ const $saveNoteBtn = $(".save-note");
 const $newNoteBtn = $(".new-note");
 const $noteList = $(".list-container .list-group");
 
+
 let activeNote = {};
 
+
 const getNotes = () => {
-    return $.ajax({
-        url: "/api/notes",
-        method: "Get"
-    });
+  return $.ajax({
+    url: "/api/notes",
+    method: "GET"
+  });
 };
 
-// saving note//
+//saving note//
 
 const saveNote = (note) => {
-    return $.ajax({
-        url: "/api/notes",
-        data: note, 
-        method: "POST"
-    });
+  return $.ajax({
+    url: "/api/notes", 
+    data: note,
+    method: "POST"
+  });
 };
 
-//delete note//
-
+//delete note// 
 const deleteNote = (id) => {
-    return $.ajax({
-        url: "api/notes/" + id,
-        method: "DELETE"
-    });
+  return $.ajax({
+    url: "api/notes/" + id,
+    method: "DELETE"
+  });
 };
 
-//If note is active, display it//
-const renderActveNote = () => {
-    $saveNoteBtn.hide();
+// If note is active, display it//
+const renderActiveNote = () => {
 
-    if (activeNote.id) {
-        $noteTitle.attr("readonly", true);
-        $noteText.attr("readonly", true);
-        $noteTitle.val(activeNote.title);
-        $noteText.val(activeNote.text);
-      } else {
-        $noteTitle.attr("readonly", false);
-        $noteText.attr("readonly", false);
-        $noteTitle.val("");
-        $noteText.val("");
-      }
+  $saveNoteBtn.hide();
+
+  if (activeNote.id) {
+    $noteTitle.attr("readonly", true);
+    $noteText.attr("readonly", true);
+    $noteTitle.val(activeNote.title);
+    $noteText.val(activeNote.text);
+  } else {
+    $noteTitle.attr("readonly", false);
+    $noteText.attr("readonly", false);
+    $noteTitle.val("");
+    $noteText.val("");
+  }
 };
 
 // save note to db and view update
 const handleNoteSave = function() {
-    const newNote = {
-        title: $noteTitle.val(),
-        text: $noteText.val(),
-    };
+  const newNote = {
+    title: $noteTitle.val(),
+    text: $noteText.val(),
+  };
 
-    saveNote(newNote).then((data) => {
-        getAndRenderNotes();
-        renderActiveNote();
-    });
+  saveNote(newNote).then((data) => {
+    getAndRenderNotes();
+    renderActiveNote();
+  });
 };
 
-//to delete note 
+// to delete note
 
 const handleNoteDelete = (event) => {
-    event.stopProgation();
+  event.stopPropagation();
 
-    const note = $(this)
-        .parent(".list-group-item")
-        .data();
+  const note = $(this)
+    .parent(".list-group-item")
+    .data();
 
-
-     if (activeNote.id === note.id) {
-         activeNote = {};
-     }   
-
-     deleteNote(note.id).then(function() {
-         getAndRenderNotes();
-         renderActveNote();
-     });
-};
-
-const handleNOteView = function() {
-    activeNote = $(this).data();
-    renderActiveNote();
-};
-
-const handlNewNoteView = function() {
+  if (activeNote.id === note.id) {
     activeNote = {};
+  }
+
+  deleteNote(note.id).then(function() {
+    getAndRenderNotes();
     renderActiveNote();
+  });
+};
+
+
+const handleNoteView = () => {
+
+  activeNote = $(this).data();
+  renderActiveNote();
+};
+
+
+const handleNewNoteView = () => {
+  activeNote = {};
+  renderActiveNote();
 };
 
 // If a note's title or text are empty, hide the save button
 // Or else show it
-
-const handleRenderSaveBtn = function() {
-    if (!$noteTitle.val().trim() || !$noteText.val().trim()) {
-        $saveNoteBtn.hide();
-    } else {
-        $saveNoteBtn.show();
-    }
+const handleRenderSaveBtn = () => {
+  if (!$noteTitle.val().trim() || !$noteText.val().trim()) {
+    $saveNoteBtn.hide();
+  } else {
+    $saveNoteBtn.show();
+  }
 };
 
-const renderNoteList = (note) => {
-    $noteList.empty();
+//render list 
+const renderNoteList = (notes) => {
+  $noteList.empty();
 
-    let noteListItems = [];
+  Let noteListItems = [];
 
-    for (var i = 0; i < note.length; i++) {
-        const note = notes[i];
+  for (var i = 0; i < notes.length; i++) {
+    const note = notes[i];
 
-        const $li = $("<li class='lsitgroup-item'>").data(note);
-        const $span = $("<span>").text(note.title);
-        const $delBtn = $(
-            "<i class='fas fa-trash-alt float-right text danger delete-note'>"
-        );
+    const $li = $("<li class='list-group-item'>").data(note);
+    const $span = $("<span>").text(note.title);
+    const $delBtn = $(
+      "<i class='fas fa-trash-alt float-right text-danger delete-note'>"
+    );
 
-        $li.append($span, $delBtn);
-        noteListItems.push($li);
-    } 
+    $li.append($span, $delBtn);
+    noteListItems.push($li);
+  }
 
-    $noteList.append(noteListItems);
+  $noteList.append(noteListItems);
 };
 
 //grab note from databass and render them to sidebar
 const getAndRenderNotes = () => {
-    return getNotes().then((data) => {
-        renderNoteList(data);
-    });
+  return getNotes().then((data) => {
+    renderNoteList(data);
+  });
 };
 
 $saveNoteBtn.on("click", handleNoteSave);
@@ -138,5 +142,5 @@ $noteList.on("click", ".delete-note", handleNoteDelete);
 $noteTitle.on("keyup", handleRenderSaveBtn);
 $noteText.on("keyup", handleRenderSaveBtn);
 
-//get and render the initil note list 
+// get and redner the inital note list 
 getAndRenderNotes();
