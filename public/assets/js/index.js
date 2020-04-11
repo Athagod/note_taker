@@ -66,22 +66,22 @@ const handleNoteSave = function() {
 
 // to delete note
 
-const handleNoteDelete = (event) => {
-  event.stopPropagation();
+// const handleNoteDelete = (event) => {
+//   event.stopPropagation();
 
-  const note = $(this)
-    .parent(".list-group-item")
-    .data();
+//   const note = $(this)
+//     .parent(".list-group-item")
+//     .data();
 
-  if (activeNote.id === note.id) {
-    activeNote = {};
-  }
+//   if (activeNote.id === note.id) {
+//     activeNote = {};
+//   }
 
-  deleteNote(note.id).then(function() {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
-};
+//   deleteNote(note.id).then(function() {
+//     getAndRenderNotes();
+//     renderActiveNote();
+//   });
+// };
 
 
 const handleNoteView = () => {
@@ -110,7 +110,7 @@ const handleRenderSaveBtn = () => {
 const renderNoteList = (notes) => {
   $noteList.empty();
 
-  Let noteListItems = [];
+  let noteListItems = [];
 
   for (var i = 0; i < notes.length; i++) {
     const note = notes[i];
