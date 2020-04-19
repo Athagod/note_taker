@@ -43,7 +43,7 @@ app.get("/api/noteTest", (req, res) => {
 
 app.post('/api/notes/', (req, res) => {
     let newNote = req.body;
-    newNote.title = newNote.title; 
+    newNote.id = note.length + 1; 
 
   notes.push(newNote);
 
@@ -60,9 +60,8 @@ function getId() {
 app.delete('/api/notes/:id', async (req, res) => {
     let deleteNote
     try{
-        deleteNote = await notes.findbyID(req.params.id)
-        await book.remove()
-        res.redirect('/notes')
+        const toDelete = notes.findIndex(note => note.id === req.params.id)
+        notes.splice(toDelete, 1);
 
     } catch {
 

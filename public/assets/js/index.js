@@ -34,15 +34,15 @@ const deleteNote = (id) => {
 };
 
 // If note is active, display it//
-const renderActiveNote = () => {
+const renderActiveNote = (note) => {
 
   $saveNoteBtn.hide();
 
-  if (activeNote.id) {
+  if (note.id) {
     $noteTitle.attr("readonly", true);
     $noteText.attr("readonly", true);
-    $noteTitle.val(activeNote.title);
-    $noteText.val(activeNote.text);
+    $noteTitle.val(note.title);
+    $noteText.val(note.text);
   } else {
     $noteTitle.attr("readonly", false);
     $noteText.attr("readonly", false);
@@ -66,28 +66,28 @@ const handleNoteSave = function() {
 
 // to delete note
 
-// const handleNoteDelete = (event) => {
-//   event.stopPropagation();
+const handleNoteDelete = (event) => {
+  event.stopPropagation();
 
-//   const note = $(this)
-//     .parent(".list-group-item")
-//     .data();
+  const note = $(event.target)
+    .parent(".list-group-item")
+    .data();
 
-//   if (activeNote.id === note.id) {
-//     activeNote = {};
-//   }
-
-//   deleteNote(note.id).then(function() {
-//     getAndRenderNotes();
-//     renderActiveNote();
-//   });
-// };
+  if (activeNote.id === note.id) {
+    activeNote = {};
+  }
+  // make sure the success/then block gets called after deletion
+  deleteNote(note.id).success(function() {
+    getAndRenderNotes();
+    renderActiveNote();
+  });
+};
 
 
 const handleNoteView = () => {
 
-  activeNote = $(this).data();
-  renderActiveNote();
+  activeNote = $(event.taget).data();
+  renderActiveNote(activeNote);
 };
 
 
